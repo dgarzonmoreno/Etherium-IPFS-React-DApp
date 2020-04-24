@@ -77,7 +77,11 @@ const EtheriumApp = () => {
 
 
     return(
-        <Header as='h1' icon style = {{'paddingTop': '10%'}}>
+        <Header 
+        as='h1' 
+        icon 
+        style = {{'paddingTop': '10%'}}
+        >
             <Icon name='ethereum' />
                 IPFS x Etherium 
             <Header.Subheader>
