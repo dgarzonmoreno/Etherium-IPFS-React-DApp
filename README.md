@@ -1,4 +1,6 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Description
+
+Using "https://itnext.io/build-a-simple-ethereum-interplanetary-file-system-ipfs-react-js-dapp-23ff4914ce4e" as an example, working on a DApp that uploads a document to an IPFS network and stores the hash of that document on the Ethereum blockchain.
 
 ## Available Scripts
 
