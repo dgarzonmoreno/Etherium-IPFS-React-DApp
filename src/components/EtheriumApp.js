@@ -23,16 +23,14 @@ const EtheriumApp = () => {
         const file = event.target.files[0]
         let reader = new window.FileReader()
         reader.readAsArrayBuffer(file)
-        reader.onloadend = () => this.convertToBuffer(reader)
+        reader.onloadend = () => convertToBuffer(reader)
     };
-
     const convertToBuffer = async (reader) => {
         //file is converted to a buffer to prepare for uploading to IPFS
         const buffer = await Buffer.from(reader.result);
         //set this buffer -using es6 syntax
         setBuffer(buffer);
     };
-
     const onClick = async () => {
         try {
             this.setState({ blockNumber: "waiting.." });
@@ -49,7 +47,6 @@ const EtheriumApp = () => {
             console.log(error);
         }
     }
-
     const onSubmit = async (event) => {
         event.preventDefault();
 
@@ -92,20 +89,21 @@ const EtheriumApp = () => {
 
                 <Divider horizontal> Choose file to send to IPFS</Divider>
 
-                <Form>
+                <Form
+                    onSubmit={(event) => { onSubmit(event) }}
+                >
                     <Form.Group
-                        onSubmit={(event) => { onSubmit(event) }}
                         widths='equal'
                     >
                         <Form.Button
                             icon='file'
-                            onClick={() => { this.fileInputRef.current.click() }}
+                            onClick={() => { fileInputRef.current.click() }}
                         />
                         <input
-                            ref={this.fileInputRef}
+                            ref={fileInputRef}
                             type='file'
                             hidden
-                            onChange={this.captureFile}
+                            onChange={(event) => { captureFile(event) }}
                         />
                         <Form.Button color='twitter' type='submit'>Send!</Form.Button>
                     </Form.Group>
@@ -114,7 +112,9 @@ const EtheriumApp = () => {
                 <Divider horizontal> Transaction History</Divider>
 
 
-                {/* <Table celled style={{ 'marginTop': '10%' }}>
+                {
+                    ipfsHash && ethAddress && transactionHash && 
+                    <Table celled style={{ 'marginTop': '10%' }}>
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>Tx Receipt Category</Table.HeaderCell>
@@ -141,7 +141,8 @@ const EtheriumApp = () => {
                             <Table.Cell>{this.state.transactionHash}</Table.Cell>
                         </Table.Row>
                     </Table.Body>
-                </Table> */}
+                    </Table>
+                }
             </Segment>
         </Fragment>
     );
