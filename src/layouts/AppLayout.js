@@ -5,7 +5,7 @@ import { Grid } from 'semantic-ui-react';
 const AppLayout = () => {
 
     return(
-        <Grid centered columns={ 3 }>
+        <Grid centered columns={ 2 }>
             <Grid.Column centered>
                 <EtheriumApp/>
             </Grid.Column>
