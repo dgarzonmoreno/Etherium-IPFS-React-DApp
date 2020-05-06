@@ -1,5 +1,5 @@
 import React, { useState, useRef, Fragment } from 'react';
-import web3 from "web3";
+import web3 from '../web3';
 import storehash from '../storehash';
 import ipfs from '../ipfs';
 import { Divider, Form, Header, Icon, Label, Segment, Table } from 'semantic-ui-react';
@@ -15,12 +15,11 @@ const EtheriumApp = () => {
     const [gasUsed, setGasUsed] = useState('');
     const [txReceipt, setTxReceipt] = useState('');
 
-    const fileInputRef = useRef();
-
     const captureFile = (event) => {
         event.stopPropagation()
         event.preventDefault()
         const file = event.target.files[0]
+        console.log(file);
         let reader = new window.FileReader()
         reader.readAsArrayBuffer(file)
         reader.onloadend = () => convertToBuffer(reader)
@@ -31,6 +30,7 @@ const EtheriumApp = () => {
         //set this buffer -using es6 syntax
         setBuffer(buffer);
     };
+
     const onClick = async () => {
         try {
             this.setState({ blockNumber: "waiting.." });
@@ -47,6 +47,7 @@ const EtheriumApp = () => {
             console.log(error);
         }
     }
+
     const onSubmit = async (event) => {
         event.preventDefault();
 
@@ -60,7 +61,7 @@ const EtheriumApp = () => {
 
         //save document to IPFS,return its hash#, and set hash# to state
         //https://github.com/ipfs/interface-ipfs-core/blob/master/SPEC/FILES.md#add 
-        await ipfs.add(this.state.buffer, (err, hash) => {
+        await ipfs.add(buffer, (err, hash) => {
             console.log(err, hash);
             //setState by setting ipfsHash to ipfsHash[0].hash 
             setIpfsHash(hash[0].hash);
@@ -73,7 +74,6 @@ const EtheriumApp = () => {
             }); //storehash 
         }) //await ipfs.add 
     };
-
 
     return (
         <Fragment >
@@ -90,20 +90,18 @@ const EtheriumApp = () => {
                 <Divider horizontal> Choose file to send to IPFS</Divider>
 
                 <Form
-                    onSubmit={(event) => { onSubmit(event) }}
+                    onSubmit={onSubmit}
                 >
                     <Form.Group
                         widths='equal'
                     >
-                        <Form.Button
+                        {/* <Form.Button
                             icon='file'
-                            onClick={() => { fileInputRef.current.click() }}
-                        />
+                            onClick = { () => { fileInputRef.current.click() } }
+                        /> */}
                         <input
-                            ref={fileInputRef}
                             type='file'
-                            hidden
-                            onChange={(event) => { captureFile(event) }}
+                            onChange={captureFile}
                         />
                         <Form.Button color='twitter' type='submit'>Send!</Form.Button>
                     </Form.Group>
@@ -113,34 +111,34 @@ const EtheriumApp = () => {
 
 
                 {
-                    ipfsHash && ethAddress && transactionHash && 
+                    ipfsHash && ethAddress && transactionHash &&
                     <Table celled style={{ 'marginTop': '10%' }}>
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell>Tx Receipt Category</Table.HeaderCell>
-                            <Table.HeaderCell>Values</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                        <Table.Row>
-                            <Table.Cell>
-                                <Label ribbon>IPFS Hash # stored on Eth Contract</Label>
-                            </Table.Cell>
-                            <Table.Cell>{this.state.ipfsHash}</Table.Cell>
-                        </Table.Row>
-                        <Table.Row>
-                            <Table.Cell >
-                                <Label ribbon>Ethereum Contract Address</Label>
-                            </Table.Cell>
-                            <Table.Cell>{this.state.ethAddress}</Table.Cell>
-                        </Table.Row>
-                        <Table.Row>
-                            <Table.Cell >
-                                <Label ribbon>Tx Hash #</Label>
-                            </Table.Cell>
-                            <Table.Cell>{this.state.transactionHash}</Table.Cell>
-                        </Table.Row>
-                    </Table.Body>
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell>Tx Receipt Category</Table.HeaderCell>
+                                <Table.HeaderCell>Values</Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                            <Table.Row>
+                                <Table.Cell>
+                                    <Label ribbon>IPFS Hash # stored on Eth Contract</Label>
+                                </Table.Cell>
+                                <Table.Cell>{this.state.ipfsHash}</Table.Cell>
+                            </Table.Row>
+                            <Table.Row>
+                                <Table.Cell >
+                                    <Label ribbon>Ethereum Contract Address</Label>
+                                </Table.Cell>
+                                <Table.Cell>{this.state.ethAddress}</Table.Cell>
+                            </Table.Row>
+                            <Table.Row>
+                                <Table.Cell >
+                                    <Label ribbon>Tx Hash #</Label>
+                                </Table.Cell>
+                                <Table.Cell>{this.state.transactionHash}</Table.Cell>
+                            </Table.Row>
+                        </Table.Body>
                     </Table>
                 }
             </Segment>
